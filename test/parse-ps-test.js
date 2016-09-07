@@ -2,7 +2,8 @@
 var expect = require('chai').expect;
 var ps = require('../lib/parse-ps');
 var paths = {
-    p4_l1: 'test/fixtures/example-4pages-1link.ps'
+    p4_l1: 'test/fixtures/example-4pages-1link.ps',
+    p3_l_mult: 'test/fixtures/example-3pages-mult-links.ps'
 };
 
 describe('parse', function () {
@@ -66,6 +67,16 @@ describe('parse', function () {
             return ps.parse(paths.p4_l1).then(function (d) {
                 var result = d.getPageData(1);
                 expect(result.links[0]).to.equal('obj_5');
+            });
+        });
+
+        it('should include the multiple objects that link to other pages', function () {
+            return ps.parse(paths.p3_l_mult).then(function (d) {
+                var result = d.getPageData(3);
+                expect(result.links.length).to.equal(3);
+                expect(result.links[0]).to.equal('obj_15');
+                expect(result.links[1]).to.equal('obj_16');
+                expect(result.links[2]).to.equal('obj_17');
             });
         });
     });
