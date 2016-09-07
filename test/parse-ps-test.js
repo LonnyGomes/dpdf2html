@@ -128,4 +128,54 @@ describe('parse', function () {
             });
         });
     });
+
+    describe('toJSON', function () {
+        it('should return an object with a totalPages item', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.toJSON();
+                expect(result.totalPages).to.exist;
+                expect(result.totalPages).to.equal(4);
+            });
+        });
+
+        it('should return an object with a dimensions item', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.toJSON();
+                expect(result.dimensions).to.exist;
+                expect(result.dimensions.x).to.equal(0);
+                expect(result.dimensions.y).to.equal(0);
+                expect(result.dimensions.width).to.equal(612);
+                expect(result.dimensions.height).to.equal(792);
+            });
+        });
+
+        it('should return an object with a pages array', function () {
+            return ps.parse(paths.p3_l_mult).then(function (d) {
+                var result = d.toJSON();
+                expect(result.pages).to.exist;
+                expect(result.pages.length).to.equal(3);
+
+                //first page should have no links
+                expect(result.pages[0].links.length).to.equal(0);
+                //second page should have 1 link
+                expect(result.pages[1].links.length).to.equal(1);
+                //third page should have 3 links
+                expect(result.pages[2].links.length).to.equal(3);
+
+                //confirm the integrity of the link objects
+                result.pages.forEach(function (curPageObj) {
+                    if (curPageObj.links) {
+                        curPageObj.links.forEach(function (curLinkObj) {
+                            expect(curLinkObj.link).to.exist;
+                            expect(curLinkObj.hitArea).to.exist;
+                            expect(curLinkObj.hitArea.x).to.exist;
+                            expect(curLinkObj.hitArea.y).to.exist;
+                            expect(curLinkObj.hitArea.width).to.exist;
+                            expect(curLinkObj.hitArea.height).to.exist;
+                        });
+                    }
+                });
+            });
+        });
+    });
 });
