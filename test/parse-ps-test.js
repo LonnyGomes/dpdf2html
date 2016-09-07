@@ -80,4 +80,33 @@ describe('parse', function () {
             });
         });
     });
+
+    describe('getResourceData', function () {
+        it('should return null if resource id does not exist', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.getResourceData('bogusId');
+                expect(result).to.be.null;
+            });
+        });
+
+        it('should return null if a number is passed in', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.getResourceData(1234);
+                expect(result).to.be.null;
+            });
+        });
+
+        it('should return a rect object defined the hit area', function () {
+            return ps.parse(paths.p3_l_mult).then(function (d) {
+                //The rect we are querying should have to following values:
+                //[199.6 482 412.4 404.8]
+                var result = d.getResourceData('obj_11');
+                expect(result.rect).to.exist;
+                expect(result.rect.x).to.equal(200);
+                expect(result.rect.y).to.equal(310);
+                expect(result.rect.width).to.equal(212);
+                expect(result.rect.height).to.equal(77);
+            });
+        });
+    });
 });
