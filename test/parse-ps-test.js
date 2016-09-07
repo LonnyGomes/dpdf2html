@@ -47,4 +47,20 @@ describe('parse', function () {
             expect(result.getSeconds()).to.equal(38);
         });
     });
+
+    describe('getPageData', function () {
+        it('should return null if the page number does not exist', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.getPageData(100);
+                expect(result).to.be.null;
+            });
+        });
+
+        it('should include the object for a page with a link to another page', function () {
+            return ps.parse(paths.p4_l1).then(function (d) {
+                var result = d.getPageData(1);
+                expect(result.links[0]).to.equal('obj_5');
+            });
+        });
+    });
 });
