@@ -96,7 +96,7 @@ describe('parse', function () {
             });
         });
 
-        it('should return a rect object defined the hit area', function () {
+        it('should return a rect object that defines the hit area', function () {
             return ps.parse(paths.p3_l_mult).then(function (d) {
                 //The rect we are querying should have to following values:
                 //[199.6 482 412.4 404.8]
@@ -106,6 +106,25 @@ describe('parse', function () {
                 expect(result.rect.y).to.equal(310);
                 expect(result.rect.width).to.equal(212);
                 expect(result.rect.height).to.equal(77);
+            });
+        });
+
+        it('should return a destination object that links to a page', function () {
+            return ps.parse(paths.p3_l_mult).then(function (d) {
+                var dest_obj = 'obj_10';
+                var result = d.getResourceData('obj_17');
+                var destExistsInPages = false;
+                expect(result.destination).to.exist;
+                expect(result.destination).to.equal(dest_obj);
+
+                //it should also be in the pages object
+                Object.keys(d.DOM.pageObjects).forEach(function (curKey) {
+                    if (d.DOM.pageObjects[curKey].objId === dest_obj) {
+                        destExistsInPages = true;
+                    }
+                });
+
+                expect(destExistsInPages).to.be.true;
             });
         });
     });
